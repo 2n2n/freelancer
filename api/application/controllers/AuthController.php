@@ -20,8 +20,9 @@ class AuthController extends CI_Controller
         {
             if($this->User_model->authenticate())
             {
-                    echo "welcome mother fucker!";
-                    // do some response here
+                $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(["welcome"]));
             }
             else
             {

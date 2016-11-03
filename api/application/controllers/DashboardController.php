@@ -8,7 +8,7 @@ class DashboardController extends CI_Controller
             ->select('last_name, first_name, email')
             ->where('id', $userid)
             ->get('users')
-            ->result();
+            ->row();
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($userdata));

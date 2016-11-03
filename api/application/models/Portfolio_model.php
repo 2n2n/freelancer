@@ -1,6 +1,14 @@
 <?php
 class Portfolio_model extends CI_Model
 {
+    function getPortfolios($user_id)
+    {
+        return $this->db
+            ->where('userid',$user_id)
+            ->get('portfolio')
+            ->result();
+    }
+
     function add($user_id)
     {
         $config['upload_path']          = './uploads/'.$user_id.'/';
