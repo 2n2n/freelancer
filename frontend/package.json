@@ -1,0 +1,19 @@
+{
+  "name": "freelancer",
+  "version": "1.0.0",
+  "description": "angular frontent for freelancer app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "angular",
+    "project"
+  ],
+  "author": "anthony.ras",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-route": "^1.5.8"
+  }
+}
