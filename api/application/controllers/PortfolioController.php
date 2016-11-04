@@ -6,6 +6,15 @@ class PortfolioController extends CI_Controller
         $val->images = json_decode($val->images);
         return $val;
     }
+    function get()
+    {
+        $user_id = 1;
+        $response = $this->Portfolio_model->get($user_id);
+        $response->images = json_decode($response->images);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
     function all()
     {
         $user_id = 1;
@@ -60,6 +69,45 @@ class PortfolioController extends CI_Controller
     }
     function update()
     {
+        $this->form_validation->set_rules([
+            [
+                'field' => 'title',
+                'label' => 'title',
+                'rules' => 'required'
+            ],
+            [
+                'field' => 'description',
+                'label' => 'short description',
+                'rules' => 'required'
+            ],
+            [
+                'field' => 'price',
+                'label' => 'price',
+                'rules' => 'required'
+            ]
+        ]);
+        if( $this->form_validation->run() )
+        {
+            if( $this->Portfolio_model->update($this->input->post('id')) )
+            {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['response' => true,'msg' => 'Update Success!']));
+            }
+            else 
+            {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['response' => false,'msg' => 'Update Failed!']));
+            }
+        }
+        else 
+        {
+            $errors = $this->form_validation->error_array();
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($errors));
+        }
 
     }
 }

@@ -11,8 +11,16 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
         templateUrl: './views/register.html',
         controller: 'AuthController'
     })
+    .when('/contact/:id', {
+        templateUrl: './views/contact/message.html',
+        controller: 'MessageController'
+    })
     .when('/portfolio/add', {
         templateUrl: './views/portfolio/add_form.html',
+        controller: 'DashboardController'
+    })
+    .when('/portfolio/edit/:id', {
+        templateUrl: './views/portfolio/edit_form.html',
         controller: 'DashboardController'
     })
     .when('/login', {
@@ -64,8 +72,17 @@ app.controller('AuthController', ['$scope', '$http', function(scope, http) {
     }
 }]);
 
-app.controller('DashboardController', ['$scope', '$http', function(scope, http) {
+app.controller('DashboardController', ['$scope', '$http', '$routeParams', function(scope, http, routeParams) {
     scope.errors = [];
+    scope.formdata = {};
+    if( routeParams.hasOwnProperty('id') )
+    {
+        http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
+        .then(function(r) {
+            scope.formdata = r.data;
+        })
+    }
+
     http.get('http://localhost/freelancer/api/account/me')
     .then(function(r) {
         scope.user = r.data;
@@ -74,36 +91,41 @@ app.controller('DashboardController', ['$scope', '$http', function(scope, http) 
     .then(function(r) {
         scope.protfolios = r.data;
     });
-
-    scope.portfolio = {
-        add: function(formdata) {
-            console.log(formdata);
-            formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
-            http.post('http://localhost/freelancer/api/portfolio/add', formdata)
-            .then(function(r) {
-                if(r.data.hasOwnProperty('response'))
-                {
-                    if(r.data.response)
-                    {
-                        alert(r.data.msg);
-                    }
-                    else 
-                    {
-                        scope.errors = [r.data.msg];
-                    }
-                }
-                else
-                {
-                    scope.errors = [];
-                    Object.keys(r.data).forEach(function(k, val){
-                        scope.errors.push(r.data[k]);
-                    });
-                }
+    var promiseManager = function(r) {
+        if(r.data.hasOwnProperty('response'))
+        {
+            if(r.data.response)
+            {
+                alert(r.data.msg);
+            }
+            else 
+            {
+                scope.errors = [r.data.msg];
+            }
+        }
+        else
+        {
+            scope.errors = [];
+            Object.keys(r.data).forEach(function(k, val){
+                scope.errors.push(r.data[k]);
             });
         }
     };
-}]);
+    scope.portfolio = {
+        add: function(formdata) {
+            formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+            http.post('http://localhost/freelancer/api/portfolio/add', formdata)
+            .then(promiseManager);
+        },
+        edit: function(formdata) {
+             formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+             http.post('http://localhost/freelancer/api/portfolio/update', formdata)
+             .then(promiseManager);
+        }
+    };
 
+}]);
+app.controller('MessageController', )
 app.controller('AppController',['$scope', '$http', function(scope) {
     scope.message = 'Hello world!';
     scope.data = [];

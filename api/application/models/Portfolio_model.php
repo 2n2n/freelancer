@@ -1,6 +1,10 @@
 <?php
 class Portfolio_model extends CI_Model
 {
+    function get($user_id)
+    {
+        return $this->db->where('userid', $user_id)->where('id', $this->input->post('id'))->get('portfolio')->row();
+    } 
     function add($user_id)
     {
         $postdata = [
@@ -52,9 +56,16 @@ class Portfolio_model extends CI_Model
 
     function update($portfolio_id)
     {
-        $postdata = $this->input->post();
+        $postdata = [
+            'title' => $this->input->post('title'),
+            'price' => $this->input->post('price'),
+            'description' => $this->input->post('description'),
+            'images' => json_encode($this->input->post('images'))
+        ];
+        $this->db->trans_start();
         $this->db->where('id', $portfolio_id)->update('portfolio', $postdata);
-        return true;
+        $this->db->trans_complete();
+        return $this->db->trans_status();
     }
 
     function all($user_id)
