@@ -1,0 +1,41 @@
+<div class="col-md-offset-3 col-md-6" style="background-color: #f8f8f8; border: solid 1px; border-color: #e7e7e7; padding-bottom:30px;">
+    <h1 class="lead text-center">Add Protfolio</h1><br>
+    <div ng-show="errors.length > 0">
+        <div class="alert alert-danger" role="alert">
+            <div ng-repeat="msg in errors">{{ msg }}</div>
+        </div>
+    </div>
+    
+    <form class="form-group" ng-submit="portfolio.edit(formdata)">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-tag"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.title" name="user" placeholder="title">
+    </div>
+    <br>
+    <label for="description">Description</label>
+    <textarea ng-model="formdata.description"  id="description" class="form-control"></textarea>
+
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-usd"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.price" name="price" placeholder="0.00">
+    </div>
+    <br>
+    <img ng-show="formdata.images[0] != '' "src="{{formdata.images[0]}}" alt="">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.images[0]" name="pass" placeholder="image url">
+    </div>
+    <img ng-show="formdata.images[1] != '' "src="{{formdata.images[1]}}" alt="">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.images[1]" name="pass" placeholder="image url">
+    </div>
+    <br>
+    <button type="submit" name="login" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Save Changes</button>
+    </form>
+
+    <div class="login-help">
+        <a href="home">Back to Profile</a>
+    </div>
+</div>
