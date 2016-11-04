@@ -50,6 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'welcome';
+$route['profile/all'] = 'DashboardController/all_profiles';
+$route['profile/get'] = 'DashboardController/my_account';
 $route['portfolio/all'] = 'PortfolioController/all';
 $route['portfolio/add'] = 'PortfolioController/add';
 $route['portfolio/get'] = 'PortfolioController/get';
@@ -57,6 +59,7 @@ $route['portfolio/update'] = 'PortfolioController/update';
 $route['portfolio/delete'] = 'PortfolioController/delete';
 $route['account/me'] = 'DashboardController/my_account';
 $route['acccount/rpwd'] = 'DashboardController/reset_password';
+$route['auth/forgot'] = 'AuthController/forgot';
 $route['login'] = 'AuthController/login';
 $route['register'] = 'AuthController/register';
 

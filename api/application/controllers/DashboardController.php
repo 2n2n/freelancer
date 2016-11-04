@@ -3,12 +3,23 @@ class DashboardController extends CI_Controller
 {
     function my_account()
     {
-        $userid = 1; // for now static data.
+        $userid = $this->input->post('id');
         $userdata = $this->db
-            ->select('last_name, first_name, email')
+            ->select('id, last_name, first_name, email')
             ->where('id', $userid)
             ->get('users')
             ->row();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($userdata));
+    }
+
+    function all_profiles()
+    {
+        $userdata = $this->db
+            ->select('id, last_name, first_name, email')
+            ->get('users')
+            ->result();
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($userdata));

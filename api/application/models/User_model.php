@@ -1,7 +1,6 @@
 <?php
 class User_model extends CI_Model
 {
-
     function contact($user_id)
     {
         $postdata = $this->input->post();
@@ -16,7 +15,7 @@ class User_model extends CI_Model
             ->row_array();
         if( count($affected) > 0 )
         {
-            return true;
+            return $affected;
             // do some session shits here.
         }
         else
@@ -44,6 +43,6 @@ class User_model extends CI_Model
         $this->db
             ->where('email', $email)
             ->update('users', ['password' => $this->input->post('password')]);
-
     }
+
 }

@@ -12,7 +12,8 @@
 	},
 	"require": {
 		"php": ">=5.2.4",
-		"firebase/php-jwt": "dev-master"
+		"firebase/php-jwt": "dev-master",
+		"sendgrid/sendgrid": "~5.1"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
