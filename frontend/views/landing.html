@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-sm-6 col-md-4" ng-repeat="profile in profiles">
+    <div class="thumbnail">
+        <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="{{profile.first_name}}">
+            <div class="caption">
+                <h3>{{profile.first_name}} {{profile.last_name}}</h3>
+                <p><i class="glyphicon glyphicon-envelope"></i> {{ profile.email }}</p>
+                <p><a href="message/{{profile.id}}" class="btn btn-primary" role="button">Message</a> <a href="profile/{{profile.id}}" class="btn btn-info" role="button">View Profile</a></p>
+            </div>
+        </div>
+    </div>
+</div>
