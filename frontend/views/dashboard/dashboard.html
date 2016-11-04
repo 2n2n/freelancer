@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="col-md-8" style="border-left: 1px solid #ddd; min-height: 100vh;">
-    <div class="row" ng-if="protfolios.length > 0">
+    <div class="row" ng-show="protfolios.length > 0">
         <div class="col-sm-6 col-md-4" ng-repeat="portfolio in protfolios">
             <div class="thumbnail">
                 <img src="..." alt="...">
@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-if="protfolios.length == 0">
+    <div class="row" ng-show="protfolios.length == 0">
         <div class="alert alert-warning" role="alert">
             You <strong>don't have</strong> any projects yet!
             <a href="portfolio/add" class="btn btn-primary btn-sm pull-right" role="button">

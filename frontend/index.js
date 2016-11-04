@@ -11,6 +11,10 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
         templateUrl: './views/register.html',
         controller: 'AuthController'
     })
+    .when('/portfolio/add', {
+        templateUrl: './views/portfolio/add_form.html',
+        controller: 'DashboardController'
+    })
     .when('/login', {
         templateUrl: './views/login.html',
         controller: 'AuthController'
@@ -59,6 +63,7 @@ app.controller('AuthController', ['$scope', '$http', function(scope, http) {
         });
     }
 }]);
+
 app.controller('DashboardController', ['$scope', '$http', function(scope, http) {
     scope.message = "WELCOME DASHBOARD";
     http.get('http://localhost/freelancer/api/account/me')
@@ -70,6 +75,7 @@ app.controller('DashboardController', ['$scope', '$http', function(scope, http) 
         scope.protfolios = r.data;
     });
 }]);
+
 app.controller('AppController',['$scope', '$http', function(scope) {
     scope.message = 'Hello world!';
     scope.data = [];
