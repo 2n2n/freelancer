@@ -1,8 +1,15 @@
 var app = angular.module('freelancer', ['ngRoute']);
 app.config(['$routeProvider', '$locationProvider', function(routeProvider, locationProvider) {
+    routeProvider.when('/', {
+        redirectTo: '/home'
+    })
     routeProvider.when('/home', {
         templateUrl:  './views/dashboard/dashboard.html',
         controller: 'DashboardController'
+    })
+    .when('/register', {
+        templateUrl: './views/register.html',
+        controller: 'AuthController'
     })
     .when('/login', {
         templateUrl: './views/login.html',
@@ -10,15 +17,15 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
     })
     .otherwise({ redirectTo: '/home'})
 
-    locationProvider.html5Mode(true);
+    locationProvider.html5Mode(true).hashPrefix('!');
 }]);
 app.controller('AuthController', ['$scope', '$http', function(scope, http) {
     scope.errors = [];
     scope.authenticate = function(credentials){
-        console.log('you tried to submit', credentials)
+        credentials = credentials || { email: '', password: '' };
         http.post('http://localhost/freelancer/api/login', credentials)
         .then(function(r) {
-            console.log(r.data);
+
             if(r.data[0] == 'welcome')
             {
                 alert('Successfully authenticated.');
@@ -29,7 +36,25 @@ app.controller('AuthController', ['$scope', '$http', function(scope, http) {
                 Object.keys(r.data).forEach(function(k, val){
                     scope.errors.push(r.data[k]);
                 });
-                // scope.errors;
+            
+            }
+        });
+    };
+    scope.register = function(info) {
+        info = info || {first_name: '', last_name: '', email: '', password: '', password_confirm: ''};
+        http.post('http://localhost/freelancer/api/register', info)
+        .then(function(r){
+
+            if( r.data.hasOwnProperty('response') && r.data.response == true) 
+            {
+                alert('registration success!');   
+            }
+            else 
+            {
+                scope.errors = [];
+                Object.keys(r.data).forEach(function(k, val){
+                    scope.errors.push(r.data[k]);
+                });
             }
         });
     }
@@ -43,7 +68,6 @@ app.controller('DashboardController', ['$scope', '$http', function(scope, http) 
     http.get('http://localhost/freelancer/api/portfolio/all')
     .then(function(r) {
         scope.protfolios = r.data;
-        console.log(r)
     });
 }]);
 app.controller('AppController',['$scope', '$http', function(scope) {
