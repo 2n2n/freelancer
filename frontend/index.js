@@ -65,7 +65,7 @@ app.controller('AuthController', ['$scope', '$http', function(scope, http) {
 }]);
 
 app.controller('DashboardController', ['$scope', '$http', function(scope, http) {
-    scope.message = "WELCOME DASHBOARD";
+    scope.errors = [];
     http.get('http://localhost/freelancer/api/account/me')
     .then(function(r) {
         scope.user = r.data;
@@ -74,6 +74,34 @@ app.controller('DashboardController', ['$scope', '$http', function(scope, http) 
     .then(function(r) {
         scope.protfolios = r.data;
     });
+
+    scope.portfolio = {
+        add: function(formdata) {
+            console.log(formdata);
+            formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+            http.post('http://localhost/freelancer/api/portfolio/add', formdata)
+            .then(function(r) {
+                if(r.data.hasOwnProperty('response'))
+                {
+                    if(r.data.response)
+                    {
+                        alert(r.data.msg);
+                    }
+                    else 
+                    {
+                        scope.errors = [r.data.msg];
+                    }
+                }
+                else
+                {
+                    scope.errors = [];
+                    Object.keys(r.data).forEach(function(k, val){
+                        scope.errors.push(r.data[k]);
+                    });
+                }
+            });
+        }
+    };
 }]);
 
 app.controller('AppController',['$scope', '$http', function(scope) {

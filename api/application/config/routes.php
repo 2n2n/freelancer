@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['portfolio/all'] = 'PortfolioController/all';
+$route['portfolio/add'] = 'PortfolioController/add';
 $route['account/me'] = 'DashboardController/my_account';
 $route['acccount/rpwd'] = 'DashboardController/reset_password';
 $route['login'] = 'AuthController/login';

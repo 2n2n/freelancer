@@ -5,22 +5,37 @@
             <div ng-repeat="msg in errors">{{ msg }}</div>
         </div>
     </div>
+    
+    <form class="form-group" ng-submit="portfolio.add(formdata)">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-tag"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.title" name="user" placeholder="title">
+    </div>
+    <br>
+    <label for="description">Description</label>
+    <textarea ng-model="formdata.description"  id="description" class="form-control"></textarea>
 
-    <form class="form-group" ng-submit="authenticate(credentials)">
-    <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-envelope"></i></span>
-        <input class="form-control" type="text" ng-model="credentials.email" name="user" placeholder="E-mail">
-    </div>
     <br>
     <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-lock"></i></span>
-        <input class="form-control" type="password" ng-model="credentials.password" name="pass" placeholder="Password">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-usd"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.price" name="price" placeholder="0.00">
     </div>
     <br>
-    <button type="submit" name="login" class="btn btn-primary">Log-in</button>
+    <img ng-show="formdata.images[0] != '' "src="{{formdata.images[0]}}" alt="">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.images[0]" name="pass" placeholder="image url">
+    </div>
+    <img ng-show="formdata.images[1] != '' "src="{{formdata.images[1]}}" alt="">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.images[1]" name="pass" placeholder="image url">
+    </div>
+    <br>
+    <button type="submit" name="login" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add</button>
     </form>
 
     <div class="login-help">
-        <a href="register">Register</a> - <a href="#">Forgot Password</a>
+        <a href="home">Back to Profile</a>
     </div>
 </div>
