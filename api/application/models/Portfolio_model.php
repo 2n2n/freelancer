@@ -69,7 +69,7 @@ class Portfolio_model extends CI_Model
             'images' => json_encode($this->input->post('images'))
         ];
         $this->db->trans_start();
-        $this->db->where('id', $portfolio_id)->update('portfolio', $postdata);
+        $this->db->set($postdata)->where('id', $portfolio_id)->update('portfolio');
         $this->db->trans_complete();
         return $this->db->trans_status();
     }

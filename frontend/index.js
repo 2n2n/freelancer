@@ -270,7 +270,7 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
         },
         edit: function(formdata) {
              formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
-             formdata['id'] = scope.$parent.user.id;
+             formdata['id'] = routeParams.id;
              http.post('http://localhost/freelancer/api/portfolio/update', formdata)
              .then(promiseManager);
         }
