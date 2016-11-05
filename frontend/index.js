@@ -92,7 +92,11 @@ app.controller('ProfileController', ['$scope', '$http', '$routeParams', function
     if(routeParams.hasOwnProperty('id'))
     {
         scope.portfolios = [];
-        http.post('http://localhost/freelancer/api/portfolio/all', routeParams)
+        http({
+            url: 'http://localhost/freelancer/api/portfolio/all',
+            method: 'GET',
+            params: routeParams
+        })
         .then(function(r) {
             {
                 scope.portfolios = r.data;
@@ -105,7 +109,11 @@ app.controller('ProfileController', ['$scope', '$http', '$routeParams', function
     }
     else
     {
-        http.get('http://localhost/freelancer/api/profile/all')
+        http({
+            url: 'http://localhost/freelancer/api/profile/all',
+            method: 'GET',
+            params: routeParams
+        })
         .then(function(r){
             scope.profiles = r.data;
         })
@@ -191,6 +199,7 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
         http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
         .then(function(r) {
             scope.user = r.data;
+            userid = scope.user.id;
         })
     }
     else if(scope.$parent.user !== null)
@@ -199,10 +208,15 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
         .then(function(r) {
             scope.messages = r.data;
         })
+        var userid = scope.$parent.user.id;
     }
 
 
-    http.get('http://localhost/freelancer/api/portfolio/all')
+    http({
+        url: 'http://localhost/freelancer/api/portfolio/all',
+        method: 'GET',
+        params: {id: userid }
+    })
     .then(function(r) {
         scope.protfolios = r.data;
     });
@@ -229,12 +243,14 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
     scope.portfolio = {
         add: function(formdata) {
             formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
-            formdata['id'] = scope.$parent.id;
+            formdata['id'] = scope.$parent.user.id;
+            console.log('add formdata', formdata);
             http.post('http://localhost/freelancer/api/portfolio/add', formdata)
             .then(promiseManager);
         },
         edit: function(formdata) {
              formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+             formdata['id'] = scope.$parent.user.id;
              http.post('http://localhost/freelancer/api/portfolio/update', formdata)
              .then(promiseManager);
         }

@@ -70,7 +70,7 @@ class PortfolioController extends CI_Controller
     }
     function all()
     {
-        $user_id = $this->input->post('id');
+        $user_id = $this->input->get('id');
         $portfolios = $this->Portfolio_model->all($user_id);
         $portfolios = array_map([$this,'decode'], $portfolios);
         $this->output
