@@ -1,0 +1,32 @@
+<div class="col-md-offset-3 col-md-6" style="background-color: #f8f8f8; border: solid 1px; border-color: #e7e7e7; padding-bottom:30px;">
+    <h1 class="lead text-center">Update Profile</h1><br>
+    <div ng-show="errors.length > 0">
+        <div class="alert alert-danger" role="alert">
+            <div ng-repeat="msg in errors">{{ msg }}</div>
+        </div>
+    </div>
+
+    <form class="form-group" ng-submit="account.update(credentials)">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-user"></i></span>
+        <input class="form-control" type="text" ng-model="credentials.first_name" name="user" placeholder="First Name">
+    </div>
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-user"></i></span>
+        <input class="form-control" type="text" ng-model="credentials.last_name" name="user" placeholder="Last Name">
+    </div>
+    <br>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-envelope"></i></span>
+        <input class="form-control" type="text" ng-model="credentials.email" name="user" placeholder="E-mail">
+    </div>
+    <br>
+    <button type="submit" name="login" class="btn btn-primary">Save Changes</button>
+    </form>
+
+    <div class="login-help">
+        <a ng-click="account.cancel()" class="btn btn-warning pull-right">Back To Profile</a>
+        <br class="clearfix">
+    </div>
+</div>
