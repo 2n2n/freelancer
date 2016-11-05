@@ -1,6 +1,6 @@
 <div class="col-md-3">
     <div class="thumbnail" style="border: 0px;">
-    <img src="https://organicthemes.com/demo/profile/files/2012/12/profile_img.png" alt="profile">
+    <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
     <div class="caption">
     <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
     <h3 style="margin-top: 5px;">{{ user.last_name }}, {{ user.first_name }}</h3>
@@ -17,33 +17,32 @@
             <h1 class="lead">Nice to meet you, let's keep in touch.</h1>
         </div>
     </div>
-    
-    <form class="form-group" ng-submit="portfolio.edit(formdata)">
-    <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-tag"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.title" name="user" placeholder="title">
-    </div>
-    <br>
-    <label for="description">Description</label>
-    <textarea ng-model="formdata.description"  id="description" class="form-control"></textarea>
 
-    <br>
+    <div ng-show="errors.length > 0">
+        <div class="alert alert-danger" role="alert">
+            <div ng-repeat="msg in errors">{{ msg }}</div>
+        </div>
+    </div>
+
+    <form class="form-group" ng-submit="message(formdata)">
     <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-usd"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.price" name="price" placeholder="0.00">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-asterisk"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.name" name="user" placeholder="Name">
     </div>
     <br>
-    <img ng-show="formdata.images[0] != '' "src="{{formdata.images[0]}}" alt="">
     <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.images[0]" name="pass" placeholder="image url">
-    </div>
-    <img ng-show="formdata.images[1] != '' "src="{{formdata.images[1]}}" alt="">
-    <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.images[1]" name="pass" placeholder="image url">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-envelope"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.email" name="user" placeholder="Email">
     </div>
     <br>
-    <button type="submit" name="login" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Save Changes</button>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-asterisk"></i></span>
+        <input class="form-control" type="text" ng-model="formdata.subject" name="user" placeholder="subject">
+    </div>
+    <br>
+    <label for="description">message</label>
+    <textarea ng-model="formdata.message"  id="description" class="form-control"></textarea>
+    <br>
+    <button type="submit" name="login" class="btn btn-primary"><i class="glyphicon glyphicon-send"></i> SEND</button>
     </form>
 </div>

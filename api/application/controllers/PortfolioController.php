@@ -1,14 +1,67 @@
 <?php
 class PortfolioController extends CI_Controller
 {
-    function decode($val) 
+    function inbox()
+    {
+        $messages = $this->db
+            ->where('userid', $this->input->post('id'))
+            ->get('contacts')
+            ->result();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($messages));
+    }
+
+    function send()
+    {
+        $this->form_validation->set_rules([
+            [
+                'field' => 'name',
+                'label' => 'name',
+                'rules' => 'required'
+            ],
+            [
+                'field' => 'message',
+                'label' => 'message',
+                'rules' => 'required'
+            ],
+            [
+                'field' => 'email',
+                'label' => 'email',
+                'rules' => 'required|valid_email'
+            ],
+            [
+                'field' => 'subject',
+                'label' => 'subject',
+                'rules' => 'required'
+            ]
+        ]);
+
+        if( $this->form_validation->run() )
+        {
+            $this->db->trans_start();
+            $this->db->insert('contacts', $this->input->post());
+            $this->db->trans_complete();
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['response' => true, 'msg' => 'Message Sent!']));
+        }
+        else
+        {
+            $errors = $this->form_validation->error_array();
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($errors));
+        }
+    }
+    function decode($val)
     {
         $val->images = json_decode($val->images);
         return $val;
     }
     function get()
     {
-        $user_id = 1;
+        $user_id = $this->input->post('id');
         $response = $this->Portfolio_model->get($user_id);
         $response->images = json_decode($response->images);
         $this->output
@@ -17,7 +70,7 @@ class PortfolioController extends CI_Controller
     }
     function all()
     {
-        $user_id = 1;
+        $user_id = $this->input->post('id');
         $portfolios = $this->Portfolio_model->all($user_id);
         $portfolios = array_map([$this,'decode'], $portfolios);
         $this->output
@@ -26,7 +79,7 @@ class PortfolioController extends CI_Controller
     }
 
     function add() {
-        $user_id = 1;
+        $user_id = $this->input->post('id');
         $this->form_validation->set_rules([
             [
                 'field' => 'title',
@@ -44,7 +97,7 @@ class PortfolioController extends CI_Controller
                 'rules' => 'required'
             ]
         ]);
-        if( $this->form_validation->run() ) 
+        if( $this->form_validation->run() )
         {
             if( $this->Portfolio_model->add($user_id) )
             {
@@ -94,14 +147,14 @@ class PortfolioController extends CI_Controller
                     ->set_content_type('application/json')
                     ->set_output(json_encode(['response' => true,'msg' => 'Update Success!']));
             }
-            else 
+            else
             {
                 $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode(['response' => false,'msg' => 'Update Failed!']));
             }
         }
-        else 
+        else
         {
             $errors = $this->form_validation->error_array();
             $this->output

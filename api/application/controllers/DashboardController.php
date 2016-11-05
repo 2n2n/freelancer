@@ -9,9 +9,54 @@ class DashboardController extends CI_Controller
             ->where('id', $userid)
             ->get('users')
             ->row();
+
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($userdata));
+    }
+
+    function update_account()
+    {
+        $this->form_validation->set_rules([
+            [
+            'field' => 'first_name',
+            'label' => 'first name',
+            'rules' => 'required'
+            ],
+            [
+                'field' => 'last_name',
+                'label' => 'last name',
+                'rules' => 'required'
+            ],
+            [
+                'field' => 'email',
+                'label' => 'email',
+                'rules' => 'required|valid_email'
+            ]
+        ]);
+
+        if($this->form_validation->run())
+        {
+            if( $data = $this->User_model->update($this->input->post('id')) )
+            {
+                $updated_info = $this->db->where('id', $this->input->post('id'))->get('users')->row();
+                $response = ['response' => true, 'msg' => 'Update sucess!', 'user' => $updated_info];
+            }
+            else
+            {
+                $response = ['Something went wrong during the update.'];
+            }
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+        }
+        else
+        {
+            $errors = $this->form_validation->error_array();
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($errors));
+        }
     }
 
     function all_profiles()
@@ -46,7 +91,7 @@ class DashboardController extends CI_Controller
             $this->User_model->change_password($email);
             $this->output
                  ->set_content_type('application/json')
-                 ->set_output(json_encode('fucker!'));
+                 ->set_output(json_encode(['response' => true, 'msg' => 'Reset Success.']));
         }
         else
         {

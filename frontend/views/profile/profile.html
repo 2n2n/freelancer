@@ -3,11 +3,10 @@
     <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
     <div class="caption">
     <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
-    <h3 style="margin-top: 5px;">{{ $parent.user.last_name | uppercase}}, {{ $parent.user.first_name | uppercase}}</h3>
-    <p><i class="glyphicon glyphicon-envelope"></i> {{ $parent.user.email }}</p>
+    <h3 style="margin-top: 5px;">{{ user.last_name | uppercase}}, {{ user.first_name | uppercase}}</h3>
+    <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
     <p>
-        <a href="message/inbox" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-comment"></i> Contact</a>
-        <a href="#" class="btn btn-info" role="button"><i class="glyphicon glyphicon-user"></i>My Account</a>
+        <a href="message/{{ user.id }}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-comment"></i> Contact</a>
     </p>
     </div>
     </div>

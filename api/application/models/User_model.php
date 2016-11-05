@@ -6,6 +6,21 @@ class User_model extends CI_Model
         $postdata = $this->input->post();
         $this->db->insert('contacts', $postdata);
     }
+
+    function update($id)
+    {
+        $formdata = [
+            'first_name' => $this->input->post('first_name'),
+            'last_name' => $this->input->post('last_name'),
+            'email' => $this->input->post('email')
+        ];
+
+        $this->db->trans_start();
+        $this->db->where('id', $id)->update('users', $formdata);
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
     function authenticate()
     {
         $affected = $this->db

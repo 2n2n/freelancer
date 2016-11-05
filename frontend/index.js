@@ -1,3 +1,5 @@
+"use strict";
+
 var app = angular.module('freelancer', ['ngRoute']);
 app.config(['$routeProvider', '$locationProvider', function(routeProvider, locationProvider) {
     routeProvider.when('/', {
@@ -7,13 +9,17 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
         templateUrl:  './views/dashboard/dashboard.html',
         controller: 'DashboardController'
     })
+    .when('/setting', {
+        templateUrl: './views/dashboard/account_setting.html',
+        controller: 'AccountController'
+    })
     .when('/landing', {
         templateUrl: './views/landing.html',
         controller: 'ProfileController'
     })
     .when('/profile/:id', {
-        templateUrl: './views/dashboard/dashboard.html',
-        controller: 'DashboardController'
+        templateUrl: './views/profile/profile.html',
+        controller: 'ProfileController'
     })
     .when('/forgot', {
         templateUrl: './views/forgot.html',
@@ -47,12 +53,64 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
 
     locationProvider.html5Mode(true).hashPrefix('!');
 }]);
-app.controller('ProfileController', ['$scope', '$http', function(scope, http) {
+app.controller('AccountController', ['$scope', '$http', '$location', function(scope, http, $location) {
+    scope.credentials = angular.copy(scope.$parent.user);
+    var promiseManager = function(r) {
+        if(r.data.hasOwnProperty('response'))
+        {
+            if(r.data.response)
+            {
+                alert(r.data.msg);
+                scope.$parent.user = r.data.user;
+            }
+            else
+            {
+                scope.errors = [r.data.msg];
+            }
+        }
+        else
+        {
+            scope.errors = [];
+            Object.keys(r.data).forEach(function(k, val){
+                scope.errors.push(r.data[k]);
+            });
+        }
+    };
+    scope.account = {
+        update: function(credentials) {
+            http.post('http://localhost/freelancer/api/profile/update', credentials)
+            .then(promiseManager);
+        },
+        cancel: function() {
+            angular.copy(scope.$parent.user, scope.credentials);
+            $location.path('/home');
+        }
+    }
+}]);
+app.controller('ProfileController', ['$scope', '$http', '$routeParams', function(scope, http, routeParams) {
     scope.profiles = [];
-    http.get('http://localhost/freelancer/api/profile/all')
-    .then(function(r){
-        scope.profiles = r.data;
-    })
+    if(routeParams.hasOwnProperty('id'))
+    {
+        scope.portfolios = [];
+        http.post('http://localhost/freelancer/api/portfolio/all', routeParams)
+        .then(function(r) {
+            {
+                scope.portfolios = r.data;
+            }
+        });
+        http.post('http://localhost/freelancer/api/profile/get', routeParams)
+        .then(function(r){
+            scope.user = r.data;
+        })
+    }
+    else
+    {
+        http.get('http://localhost/freelancer/api/profile/all')
+        .then(function(r){
+            scope.profiles = r.data;
+        })
+    }
+
 }]);
 app.controller('AuthController', ['$scope', '$http', '$location', function(scope, http, location) {
     scope.errors = [];
@@ -135,6 +193,14 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
             scope.user = r.data;
         })
     }
+    else if(scope.$parent.user !== null)
+     {
+        http.post('http://localhost/freelancer/api/message/inbox', {id: scope.$parent.user.id})
+        .then(function(r) {
+            scope.messages = r.data;
+        })
+    }
+
 
     http.get('http://localhost/freelancer/api/portfolio/all')
     .then(function(r) {
@@ -163,6 +229,7 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
     scope.portfolio = {
         add: function(formdata) {
             formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+            formdata['id'] = scope.$parent.id;
             http.post('http://localhost/freelancer/api/portfolio/add', formdata)
             .then(promiseManager);
         },
@@ -175,23 +242,50 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
 
 }]);
 app.controller('MessageController', ['$scope', '$routeParams', '$http',function(scope, routeParams, http) {
+    scope.errors = [];
     http.post('http://localhost/freelancer/api/profile/get', {id: routeParams.id })
     .then(function(r) {
         scope.user = r.data;
-    })
+    });
+    var promiseManager = function(r) {
+        if(r.data.hasOwnProperty('response'))
+        {
+            if(r.data.response)
+            {
+                alert(r.data.msg);
+            }
+            else
+            {
+                scope.errors = [r.data.msg];
+            }
+        }
+        else
+        {
+            scope.errors = [];
+            Object.keys(r.data).forEach(function(k, val){
+                scope.errors.push(r.data[k]);
+            });
+        }
+    };
+    scope.message = function(formdata)
+    {
+        formdata = formdata || {message: '', email: '', name: '', subject:'' };
+        formdata['userid'] = routeParams.id;
+        http.post('http://localhost/freelancer/api/message/send', formdata)
+        .then(promiseManager)
+    }
 }]);
 app.controller('AppController',['$scope', '$location', function(scope, location) {
     scope.user = null;
     scope.$on('$routeChangeSuccess', function(s, cur, prev) {
-        console.log(prev, '<---');
+        console.log(cur.$$route.originalPath, '<---', scope.user);
         var filter = ['/','/login', '/register', '/profile', '/forgot', '/message/:id', '/profile/:id','/landing'];
+        if(scope.user != null && cur.$$route.originalPath == '/login') {
+            location.path('/home');
+        }
         if(scope.user === null && filter.indexOf(cur.$$route.originalPath) == -1)
         {
             location.path('/login');
-        }
-        if(scope.user != null && cur.$$route.originalPath == '/login') {
-            if(cur)
-            location.path('/home');
         }
     });
     scope.logout = function()
