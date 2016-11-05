@@ -62,8 +62,10 @@ class PortfolioController extends CI_Controller
     function get()
     {
         $user_id = $this->input->post('id');
-        $response = $this->Portfolio_model->get($user_id);
+        $response = $this->Portfolio_model->getPortfolio($user_id);
+
         $response->images = json_decode($response->images);
+
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($response));

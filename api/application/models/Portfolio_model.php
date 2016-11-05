@@ -5,6 +5,12 @@ class Portfolio_model extends CI_Model
     {
         return $this->db->where('userid', $user_id)->where('id', $this->input->post('id'))->get('portfolio')->row();
     }
+
+    function getPortfolio($id)
+    {
+        return $this->db->where('id', $id)->where('id', $this->input->post('id'))->get('portfolio')->row();
+
+    }
     function add($user_id)
     {
         $postdata = [

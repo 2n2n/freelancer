@@ -87,7 +87,7 @@ class DashboardController extends CI_Controller
 
         if( $this->form_validation->run() )
         {
-            $email = "ayolachll@gmail.com";
+            $email = $this->input->post('email');
             $this->User_model->change_password($email);
             $this->output
                  ->set_content_type('application/json')

@@ -6,13 +6,14 @@
     <h3 style="margin-top: 5px;">{{ user.last_name }}, {{ user.first_name }}</h3>
     <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
     <p>
-        <a href="contact" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-comment"></i> Contact</a>
+        <a href="message/inbox" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-envelope"></i> Inbox</a>
         <a href="setting" class="btn btn-info" role="button"><i class="glyphicon glyphicon-user"></i>My Account</a>
     </p>
     </div>
     </div>
 </div>
 <div class="col-md-8" style="border-left: 1px solid #ddd; min-height: 100vh;">
+    <h1 class="lead">Inbox</h1>
     <div class="row" ng-show="messages.length > 0">
         <div class="media" ng-repeat="message in messages">
             <div class="media-left">

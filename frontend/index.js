@@ -9,6 +9,10 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
         templateUrl:  './views/dashboard/dashboard.html',
         controller: 'DashboardController'
     })
+    .when('/changepassword', {
+        templateUrl: './views/dashboard/change_password.html',
+        controller: 'AccountController'
+    })
     .when('/setting', {
         templateUrl: './views/dashboard/account_setting.html',
         controller: 'AccountController'
@@ -60,8 +64,12 @@ app.controller('AccountController', ['$scope', '$http', '$location', function(sc
         {
             if(r.data.response)
             {
+                if(r.data.hasOwnProperty('user')) {
+                    scope.$parent.user = r.data.user;
+                }
                 alert(r.data.msg);
-                scope.$parent.user = r.data.user;
+                scope.errors = [];
+                scope.credentials = {};
             }
             else
             {
@@ -84,6 +92,16 @@ app.controller('AccountController', ['$scope', '$http', '$location', function(sc
         cancel: function() {
             angular.copy(scope.$parent.user, scope.credentials);
             $location.path('/home');
+        },
+        changepassword: function(credentials) {
+            credentials = credentials || { password: '', password_confirm: ''};
+            var formdata = {
+                'email': scope.$parent.user.email,
+                'password': credentials.newpassword,
+                'password_confirm': credentials.password_confirm
+            }
+            http.post('http://localhost/freelancer/api/acccount/rpwd', formdata)
+            .then(promiseManager);
         }
     }
 }]);
@@ -171,6 +189,7 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
             if( r.data.hasOwnProperty('response') && r.data.response == true)
             {
                 alert('registration success!');
+                scope.credentials = {};
             }
             else
             {
@@ -198,7 +217,8 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
     {
         http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
         .then(function(r) {
-            scope.user = r.data;
+            scope.formdata = r.data;
+            console.log(r.data);
             userid = scope.user.id;
         })
     }
