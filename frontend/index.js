@@ -51,7 +51,7 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
     })
     .when('/login', {
         templateUrl: './views/login.html',
-        controller: 'AuthController'
+        controller: 'AppController'
     })
     .otherwise({ redirectTo: '/home'})
 
@@ -160,27 +160,6 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
             });
         }
     };
-    scope.authenticate = function(credentials){
-        credentials = credentials || { email: '', password: '' };
-        console.log(credentials);
-        http.post('http://localhost/freelancer/api/login', credentials)
-        .then(function(r) {
-
-            if(r.data.hasOwnProperty('response') && r.data.response)
-            {
-                scope.$parent.user = r.data.user;
-                location.path('/home');
-            }
-            else if( r.data instanceof Object )
-            {
-                scope.errors = [];
-                Object.keys(r.data).forEach(function(k, val){
-                    scope.errors.push(r.data[k]);
-                });
-
-            }
-        });
-    };
     scope.register = function(info) {
         info = info || {first_name: '', last_name: '', email: '', password: '', password_confirm: ''};
         http.post('http://localhost/freelancer/api/register', info)
@@ -207,7 +186,6 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
         .then(promiseManager);
     }
 }]);
-
 app.controller('DashboardController', ['$scope', '$http', '$routeParams', function(scope, http, routeParams) {
     scope.errors = [];
     scope.formdata = {};
@@ -269,6 +247,7 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
             .then(promiseManager);
         },
         edit: function(formdata) {
+            formdata['id'] = scope.$parent.id;
              formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
              formdata['id'] = routeParams.id;
              http.post('http://localhost/freelancer/api/portfolio/update', formdata)
@@ -311,22 +290,93 @@ app.controller('MessageController', ['$scope', '$routeParams', '$http',function(
         .then(promiseManager)
     }
 }]);
-app.controller('AppController',['$scope', '$location', function(scope, location) {
-    scope.user = null;
+app.controller('AppController',['$scope', '$location', '$http', 'UserService', function(scope, location, http, UserService) {
+    scope.user = UserService.getUser();
     scope.$on('$routeChangeSuccess', function(s, cur, prev) {
-        console.log(cur.$$route.originalPath, '<---', scope.user);
         var filter = ['/','/login', '/register', '/profile', '/forgot', '/message/:id', '/profile/:id','/landing'];
-        if(scope.user != null && cur.$$route.originalPath == '/login') {
+        if(scope.user != undefined && cur.$$route.originalPath == '/login') {
             location.path('/home');
         }
-        if(scope.user === null && filter.indexOf(cur.$$route.originalPath) == -1)
+        if(scope.user == undefined && filter.indexOf(cur.$$route.originalPath) == -1)
         {
             location.path('/login');
         }
     });
-    scope.logout = function()
-    {
-        scope.user = null;
-        location.path('/login');
+    scope.authenticate = function(credentials){
+        credentials = credentials || { email: '', password: '' };
+        http.post('http://localhost/freelancer/api/login', credentials)
+        .then(function(r) {
+
+            if(r.data.hasOwnProperty('response') && r.data.response)
+            {
+                UserService.setUser(r.data.user);
+                scope.user = UserService.getUser();
+                console.log(scope.user);
+                location.path('/home');
+            }
+            else if( r.data instanceof Object )
+            {
+                scope.errors = [];
+                Object.keys(r.data).forEach(function(k, val){
+                    scope.errors.push(r.data[k]);
+                });
+
+            }
+        });
+    };
+    scope.logout = function() {
+        UserService.logout();
+        $location.path('/login');
+    }
+}]);
+
+app.service('UserService', ['$rootScope', '$location', '$window', function($rootScope, $location, $window) {
+    this.user = null;
+    var db = {
+        config: {
+            schema: 'user',
+            engine: $window.localStorage
+        },
+        exist: function() {
+            return this.config.engine.hasOwnProperty(this.config.schema);
+        },
+        getSchema: function() {
+            return JSON.parse(this.config.engine.getItem(this.config.schema));
+        },
+        get: function(key) {
+            var use = this.config.engine.getItem(this.config.schema);
+            var data = JSON.parse(use);
+            return data[key];
+        },
+        create: function(data) {
+            this.config.engine.setItem(this.config.schema, JSON.stringify(data));
+        },
+        delete: function() {
+            this.config.engine.clear();
+        },
+        set: function(key, value) {
+            try {
+                var schema = JSON.parse(this.config.engine.getItem(this.config.schema));
+                schema[key] = value;
+                var set = JSON.stringify(schema);
+                this.config.engine.setItem(this.config.schema, set);
+            } catch (e) {
+                console.error(e.toString());
+            }
+        }
+    }
+
+    this.getUser = function() {
+        // check user info is stored in web storage.
+        if(db.exist()) { return db.getSchema() }
+        // if not exist return null;
+    }
+
+    this.setUser = function(data) {
+        db.create(data);
+    }
+
+    this.logout = function () {
+        db.delete(); // delete the whole schema
     }
 }]);
