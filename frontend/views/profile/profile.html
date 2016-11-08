@@ -22,7 +22,7 @@
     </div>
 
     <div class="row" ng-show="portfolios.length > 0">
-        <div class="col-sm-6 col-md-4" ng-repeat="portfolio in portfolios">
+        <div class="col-sm-6 col-md-4" style="height: 350px;" ng-repeat="portfolio in portfolios">
             <div class="thumbnail">
                 <img src="{{ portfolio.images[0] }}" class="img-responsive">
                 <div class="caption">
@@ -38,8 +38,10 @@
         </div>
     </div>
     <div class="row" ng-show="protfolios.length == 0">
-        <div class="alert alert-warning" role="alert">
-            This person <strong>don't have</strong> any projects yet.
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+                This person <strong>don't have</strong> any projects yet.
+            </div>
         </div>
     </div>
 </div>

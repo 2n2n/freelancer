@@ -184,20 +184,20 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserS
     scope.messages = [];
     scope.user = UserService.getUser();
 
-    if( routeParams.hasOwnProperty('id') )
-    {
-        http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
-        .then(function(r) {
-            scope.formdata = r.data;
-        })
-    }
-    else if(scope.user !== null)
-     {
-        http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
-        .then(function(r) {
-            scope.messages = r.data;
-        })
-    }
+    // if( routeParams.hasOwnProperty('id') )
+    // {
+    //     http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
+    //     .then(function(r) {
+    //         scope.formdata = r.data;
+    //     })
+    // }
+    // else if(scope.user !== null)
+    //  {
+    //     http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
+    //     .then(function(r) {
+    //         scope.messages = r.data;
+    //     })
+    // }
 
 
     http({
@@ -282,8 +282,10 @@ app.controller('MessageController', ['$scope', '$routeParams', '$http',function(
     }
 }]);
 app.controller('AppController',['$scope', '$location', '$http', 'UserService', function(scope, location, http, UserService) {
-    scope.user = UserService.getUser();
-    scope.$on('$routeChangeSuccess', function(s, cur, prev) {
+    scope.$on('user:update', function(){
+        scope.user = UserService.getUser();
+    });
+    scope.$on('$routeChangeSuccess', function(e, cur, prev) {
         var filter = ['/','/login', '/register', '/profile', '/forgot', '/message/:id', '/profile/:id','/landing'];
         if(UserService.getUser() != null && cur.$$route.originalPath == '/login') {
             location.path('/home');
@@ -293,6 +295,8 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
             location.path('/login');
         }
     });
+
+    scope.user = UserService.getUser();
     scope.authenticate = function(credentials){
         credentials = credentials || { email: '', password: '' };
         http.post('http://localhost/freelancer/api/login', credentials)
@@ -302,6 +306,7 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
             {
                 UserService.setUser(r.data.user);
                 scope.user = UserService.getUser();
+                scope.$emit('user:update');
                 location.path('/home');
               
             }
@@ -317,6 +322,8 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
     };
     scope.logout = function() {
         UserService.logout();
+        scope.user = UserService.getUser();
+        scope.$emit('user:update');
         location.path('/login');
     }
 }]);
