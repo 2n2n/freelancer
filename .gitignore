@@ -7,7 +7,8 @@ api/application/cache/*
 api/application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
-
+frontend/uploads/images/*
+npm-debug.log
 api/vendor/
 
 # IDE Files

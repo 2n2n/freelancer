@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('freelancer', ['ngRoute']);
+var app = angular.module('freelancer', ['ngRoute', 'ngFileUpload']);
 app.config(['$routeProvider', '$locationProvider', function(routeProvider, locationProvider) {
     routeProvider.when('/', {
         redirectTo: '/landing'
@@ -134,7 +134,7 @@ app.controller('ProfileController', ['$scope', '$http', '$routeParams', function
     else
     {
         var params = { id: routeParams.id };
-        if(scope.$parent.user !== null) 
+        if(scope.$parent.user !== null)
         {
             params['exception'] = [scope.$parent.user.id];
         }
@@ -182,21 +182,26 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
         .then(promiseManager);
     }
 }]);
-app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserService', function(scope, http, routeParams, UserService) {
+app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserService', 'Upload', function(scope, http, routeParams, UserService, Upload) {
     scope.errors = [];
     scope.success = undefined;
     scope.formdata = {};
     scope.messages = [];
     scope.user = UserService.getUser();
-
-  /*  if( routeParams.hasOwnProperty('id') )
-    {
-        http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
-        .then(function(r) {
-            scope.formdata = r.data;
+    scope.img1 = '';
+    scope.img2 = '';
+    scope.onselect = function(file, name) {
+        if(!file) return;
+        Upload.upload({
+            url: "http://localhost/freelancer/api/portfolio/upload",
+            data: { file: file, id: scope.$parent.user.id }
         })
+        .then(function(r){
+            console.log(r.data);
+            scope[name] = r.data.file_name;
+        });
     }
-    else */
+
     if(scope.user !== null)
      {
         http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
@@ -240,6 +245,10 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserS
     scope.portfolio = {
         add: function(formdata) {
             formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+            formdata.images = [
+                'http://localhost/freelancer/frontend/uploads/images/' + scope.img1,
+                'http://localhost/freelancer/frontend/uploads/images/' + scope.img2
+            ];
             formdata['id'] = scope.$parent.user.id;
             http.post('http://localhost/freelancer/api/portfolio/add', formdata)
             .then(promiseManager);
@@ -314,7 +323,7 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
                 scope.user = UserService.getUser();
                 scope.$emit('user:update');
                 location.path('/home');
-              
+
             }
             else if( r.data instanceof Object )
             {
@@ -374,8 +383,8 @@ app.factory('UserService', ['$rootScope', '$location', '$window', function($root
         getUser: function(key) {
             // check user info is stored in web storage.
             if(db.exist()) {
-                if(key != undefined) return db.getSchema()[key]; 
-                return db.getSchema() 
+                if(key != undefined) return db.getSchema()[key];
+                return db.getSchema()
             }
             // if not exist return null;
             return null;

@@ -1,6 +1,31 @@
 <?php
 class PortfolioController extends CI_Controller
 {
+    function upload()
+    {
+        $config['upload_path']          = '../frontend/uploads/images';
+        $config['allowed_types']        = 'gif|jpg|png';
+        $config['raw_name']             = tempnam($config['upload_path'],'up');
+        $config['max_size']             = 2000;
+        $config['max_width']            = 1024;
+        $config['max_height']           = 768;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        if( ! $this->upload->do_upload('file') )
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['response' => false, 'msg' => $this->upload->display_errors() ]));
+        }
+        else
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($this->upload->data()));
+        }
+
+    }
     function inbox()
     {
         $messages = $this->db

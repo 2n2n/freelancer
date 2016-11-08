@@ -58,6 +58,7 @@ $route['portfolio/add'] = 'PortfolioController/add';
 $route['portfolio/get'] = 'PortfolioController/get';
 $route['portfolio/update'] = 'PortfolioController/update';
 $route['portfolio/delete'] = 'PortfolioController/delete';
+$route['portfolio/upload'] = 'PortfolioController/upload';
 $route['account/me'] = 'DashboardController/my_account';
 $route['acccount/rpwd'] = 'DashboardController/reset_password';
 $route['auth/forgot'] = 'AuthController/forgot';

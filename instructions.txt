@@ -1,0 +1,17 @@
+Requirements:
+xampp with php5.6 (https://www.apachefriends.org/download.html)
+
+
+Instructions:
+1. Install xampp
+2. Run apache and mysql from xampp control panel
+3. Extract files inside xampp_directory/htdocs/ then access that folder.
+3. Once competed you will see a folder named freelancer, go to freelancer/api/sql/ you will see the dabase structures.
+4. Select the latest db (freelancer1-3.sql)
+And export the dump file to the db.
+Note: make sure to name the database "freelancer"
+5. After exporting the app should be up and running.
+You can access the app by accessing http://localhost/freelancer/frontend
+
+
+If I missed something. please dont hesistate to contact me. [https://www.freelancer.com/u/unloki9.html]
