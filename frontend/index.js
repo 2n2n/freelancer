@@ -202,7 +202,17 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserS
         });
     }
 
-    if(scope.user !== null)
+    if( routeParams.hasOwnProperty('id') )
+    {
+        http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
+        .then(function(r) {
+            scope.formdata = r.data;
+            scope.img1 = r.data.images[0];
+            scope.img2 = r.data.images[1];
+
+        })
+    }
+    else if(scope.user !== null)
      {
         http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
         .then(function(r) {
@@ -256,6 +266,10 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserS
         edit: function(formdata) {
             formdata['id'] = scope.$parent.id;
              formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
+             formdata.images = [
+                 'http://localhost/freelancer/frontend/uploads/images/' + scope.img1,
+                 'http://localhost/freelancer/frontend/uploads/images/' + scope.img2
+             ];
              formdata['id'] = routeParams.id;
              http.post('http://localhost/freelancer/api/portfolio/update', formdata)
              .then(promiseManager);

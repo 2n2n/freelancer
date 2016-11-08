@@ -26,15 +26,16 @@
         <input class="form-control" type="text" ng-model="formdata.price" name="price" placeholder="0.00">
     </div>
     <br>
-    <img ng-show="formdata.images[0] != '' "src="{{formdata.images[0]}}" alt="">
+    <img ng-show="img1 != '' "src="uploads/images/{{ img1 }}" alt="{{img1}}" style="max-width:200px;">
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.images[0]" name="pass" placeholder="image url">
+        <input class="form-control" ngf-select="onselect($file, 'img1')" type="file" accept="image/*" ngf-max-size="2MB" required name="image" placeholder="image url">
     </div>
-    <img ng-show="formdata.images[1] != '' "src="{{formdata.images[1]}}" alt="">
+    <br>
+    <img ng-show="img2 != '' "src="uploads/images/{{ img2 }}" alt="{{img2}}" style="max-width:200px;">
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-link"></i></span>
-        <input class="form-control" type="text" ng-model="formdata.images[1]" name="pass" placeholder="image url">
+        <input class="form-control" ngf-select="onselect($file, 'img2')" type="file" accept="image/*" ngf-max-size="2MB" required name="image" placeholder="image url">
     </div>
     <br>
     <button type="submit" name="login" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Save Changes</button>
