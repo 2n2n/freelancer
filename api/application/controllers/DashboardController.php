@@ -61,8 +61,12 @@ class DashboardController extends CI_Controller
 
     function all_profiles()
     {
+        $this->db->select('id, last_name, first_name, email');
+        if($exception = $this->input->get('exception'))
+        {
+            $this->db->where('id !=', $exception);
+        }
         $userdata = $this->db
-            ->select('id, last_name, first_name, email')
             ->get('users')
             ->result();
         $this->output

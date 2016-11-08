@@ -133,10 +133,15 @@ app.controller('ProfileController', ['$scope', '$http', '$routeParams', function
     }
     else
     {
+        var params = { id: routeParams.id };
+        if(scope.$parent.user !== null) 
+        {
+            params['exception'] = [scope.$parent.user.id];
+        }
         http({
             url: 'http://localhost/freelancer/api/profile/all',
             method: 'GET',
-            params: routeParams
+            params: params
         })
         .then(function(r){
             scope.profiles = r.data;

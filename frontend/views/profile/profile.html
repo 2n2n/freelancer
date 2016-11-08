@@ -1,14 +1,14 @@
 <div class="col-md-3">
     <div class="thumbnail" style="border: 0px;">
-    <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
-    <div class="caption">
-    <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
-    <h3 style="margin-top: 5px;">{{ user.last_name | uppercase}}, {{ user.first_name | uppercase}}</h3>
-    <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
-    <p>
-        <a href="message/{{ user.id }}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-comment"></i> Contact</a>
-    </p>
-    </div>
+        <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
+        <div class="caption">
+            <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
+            <h3 style="margin-top: 5px;">{{ user.last_name | uppercase}}, {{ user.first_name | uppercase}}</h3>
+            <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
+            <p>
+                <a href="message/{{ user.id }}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-comment"></i> Contact</a>
+            </p>
+        </div>
     </div>
 </div>
 <div class="col-md-8" style="border-left: 1px solid #ddd; min-height: 100vh;">
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-show="protfolios.length == 0">
+    <div class="row" ng-show="portfolios.length == 0">
         <div class="col-md-12">
             <div class="alert alert-warning" role="alert">
                 This person <strong>don't have</strong> any projects yet.
