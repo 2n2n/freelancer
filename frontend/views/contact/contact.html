@@ -3,7 +3,7 @@
     <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
     <div class="caption">
     <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
-    <h3 style="margin-top: 5px;">{{ user.last_name }}, {{ user.first_name }}</h3>
+    <h3 style="margin-top: 5px;">{{ user.last_name | uppercase }}, {{ user.first_name | uppercase }}</h3>
     <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
     <p>
         <a href="profile/{{user.id}}" class="btn btn-info" role="button"><i class="glyphicon glyphicon-user"></i>My profile</a>
@@ -14,6 +14,11 @@
 <div class="col-md-8" style="border-left: 1px solid #ddd; min-height: 100vh;">
     <div class="row">
         <div class="col-md-12">
+            <div ng-show="success != undefined">
+                <div class="alert alert-success" role="alert">
+                    {{ success }}
+                </div>
+            </div>
             <h1 class="lead">Nice to meet you, let's keep in touch.</h1>
         </div>
     </div>

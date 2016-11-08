@@ -57,27 +57,33 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
 
     locationProvider.html5Mode(true).hashPrefix('!');
 }]);
-app.controller('AccountController', ['$scope', '$http', '$location', function(scope, http, $location) {
-    scope.credentials = angular.copy(scope.$parent.user);
+app.controller('AccountController', ['$scope', '$http', '$location', 'UserService', function(scope, http, $location, UserService) {
+    scope.user = UserService.getUser();
+    scope.credentials = angular.copy(scope.user);
+    scope.success = undefined;
+    scope.errors = [];
     var promiseManager = function(r) {
         if(r.data.hasOwnProperty('response'))
         {
             if(r.data.response)
             {
                 if(r.data.hasOwnProperty('user')) {
-                    scope.$parent.user = r.data.user;
+                    UserService.setUser(r.data.user);
+                    scope.user = UserService.getUser();
                 }
-                alert(r.data.msg);
+
+                scope.success = r.data.msg;
                 scope.errors = [];
-                scope.credentials = {};
             }
             else
             {
+                scope.success = undefined;
                 scope.errors = [r.data.msg];
             }
         }
         else
         {
+            scope.success = undefined;
             scope.errors = [];
             Object.keys(r.data).forEach(function(k, val){
                 scope.errors.push(r.data[k]);
@@ -90,13 +96,13 @@ app.controller('AccountController', ['$scope', '$http', '$location', function(sc
             .then(promiseManager);
         },
         cancel: function() {
-            angular.copy(scope.$parent.user, scope.credentials);
+            angular.copy(scope.user, scope.credentials);
             $location.path('/home');
         },
         changepassword: function(credentials) {
             credentials = credentials || { password: '', password_confirm: ''};
             var formdata = {
-                'email': scope.$parent.user.email,
+                'email': scope.user.email,
                 'password': credentials.newpassword,
                 'password_confirm': credentials.password_confirm
             }
@@ -140,20 +146,19 @@ app.controller('ProfileController', ['$scope', '$http', '$routeParams', function
 }]);
 app.controller('AuthController', ['$scope', '$http', '$location', function(scope, http, location) {
     scope.errors = [];
+    scope.success = undefined;
     var promiseManager = function(r) {
         if(r.data.hasOwnProperty('response'))
         {
             if(r.data.response)
             {
-                alert(r.data.msg);
-            }
-            else
-            {
-                scope.errors = [r.data.msg];
+                scope.errors = [];
+                scope.success = r.data.msg;
             }
         }
         else
         {
+            scope.success = undefined;
             scope.errors = [];
             Object.keys(r.data).forEach(function(k, val){
                 scope.errors.push(r.data[k]);
@@ -163,21 +168,7 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
     scope.register = function(info) {
         info = info || {first_name: '', last_name: '', email: '', password: '', password_confirm: ''};
         http.post('http://localhost/freelancer/api/register', info)
-        .then(function(r){
-
-            if( r.data.hasOwnProperty('response') && r.data.response == true)
-            {
-                alert('registration success!');
-                scope.credentials = {};
-            }
-            else
-            {
-                scope.errors = [];
-                Object.keys(r.data).forEach(function(k, val){
-                    scope.errors.push(r.data[k]);
-                });
-            }
-        });
+        .then(promiseManager);
     }
 
     scope.forgot = function(formdata)
@@ -186,52 +177,54 @@ app.controller('AuthController', ['$scope', '$http', '$location', function(scope
         .then(promiseManager);
     }
 }]);
-app.controller('DashboardController', ['$scope', '$http', '$routeParams', function(scope, http, routeParams) {
+app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserService', function(scope, http, routeParams, UserService) {
     scope.errors = [];
+    scope.success = undefined;
     scope.formdata = {};
     scope.messages = [];
+    scope.user = UserService.getUser();
 
     if( routeParams.hasOwnProperty('id') )
     {
         http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
         .then(function(r) {
             scope.formdata = r.data;
-            console.log(r.data);
-            userid = scope.user.id;
         })
     }
-    else if(scope.$parent.user !== null)
+    else if(scope.user !== null)
      {
-        http.post('http://localhost/freelancer/api/message/inbox', {id: scope.$parent.user.id})
+        http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
         .then(function(r) {
             scope.messages = r.data;
         })
-        var userid = scope.$parent.user.id;
     }
 
 
     http({
         url: 'http://localhost/freelancer/api/portfolio/all',
         method: 'GET',
-        params: {id: userid }
+        params: {id: scope.user.id }
     })
     .then(function(r) {
-        scope.protfolios = r.data;
+        scope.portfolios = r.data;
     });
     var promiseManager = function(r) {
         if(r.data.hasOwnProperty('response'))
         {
             if(r.data.response)
             {
-                alert(r.data.msg);
+                scope.errors = [];
+                scope.success = r.data.msg;
             }
             else
             {
+                scope.success = undefined;
                 scope.errors = [r.data.msg];
             }
         }
         else
         {
+            scope.success = undefined;
             scope.errors = [];
             Object.keys(r.data).forEach(function(k, val){
                 scope.errors.push(r.data[k]);
@@ -242,7 +235,6 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
         add: function(formdata) {
             formdata = formdata || {title: '', description: '', price: 0.00, images:["", ""]};
             formdata['id'] = scope.$parent.user.id;
-            console.log('add formdata', formdata);
             http.post('http://localhost/freelancer/api/portfolio/add', formdata)
             .then(promiseManager);
         },
@@ -258,6 +250,7 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', functi
 }]);
 app.controller('MessageController', ['$scope', '$routeParams', '$http',function(scope, routeParams, http) {
     scope.errors = [];
+    scope.success = undefined;
     http.post('http://localhost/freelancer/api/profile/get', {id: routeParams.id })
     .then(function(r) {
         scope.user = r.data;
@@ -267,16 +260,14 @@ app.controller('MessageController', ['$scope', '$routeParams', '$http',function(
         {
             if(r.data.response)
             {
-                alert(r.data.msg);
-            }
-            else
-            {
-                scope.errors = [r.data.msg];
+                scope.errors = [];
+                scope.success = r.data.msg;
             }
         }
         else
         {
             scope.errors = [];
+            scope.success = undefined;
             Object.keys(r.data).forEach(function(k, val){
                 scope.errors.push(r.data[k]);
             });
@@ -294,10 +285,10 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
     scope.user = UserService.getUser();
     scope.$on('$routeChangeSuccess', function(s, cur, prev) {
         var filter = ['/','/login', '/register', '/profile', '/forgot', '/message/:id', '/profile/:id','/landing'];
-        if(scope.user != undefined && cur.$$route.originalPath == '/login') {
+        if(UserService.getUser() != null && cur.$$route.originalPath == '/login') {
             location.path('/home');
         }
-        if(scope.user == undefined && filter.indexOf(cur.$$route.originalPath) == -1)
+        if(UserService.getUser() == null && filter.indexOf(cur.$$route.originalPath) == -1)
         {
             location.path('/login');
         }
@@ -311,8 +302,8 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
             {
                 UserService.setUser(r.data.user);
                 scope.user = UserService.getUser();
-                console.log(scope.user);
                 location.path('/home');
+              
             }
             else if( r.data instanceof Object )
             {
@@ -326,12 +317,12 @@ app.controller('AppController',['$scope', '$location', '$http', 'UserService', f
     };
     scope.logout = function() {
         UserService.logout();
-        $location.path('/login');
+        location.path('/login');
     }
 }]);
 
-app.service('UserService', ['$rootScope', '$location', '$window', function($rootScope, $location, $window) {
-    this.user = null;
+app.factory('UserService', ['$rootScope', '$location', '$window', function($rootScope, $location, $window) {
+    var user = null;
     var db = {
         config: {
             schema: 'user',
@@ -366,17 +357,21 @@ app.service('UserService', ['$rootScope', '$location', '$window', function($root
         }
     }
 
-    this.getUser = function() {
-        // check user info is stored in web storage.
-        if(db.exist()) { return db.getSchema() }
-        // if not exist return null;
-    }
-
-    this.setUser = function(data) {
-        db.create(data);
-    }
-
-    this.logout = function () {
-        db.delete(); // delete the whole schema
+    return {
+        getUser: function(key) {
+            // check user info is stored in web storage.
+            if(db.exist()) {
+                if(key != undefined) return db.getSchema()[key]; 
+                return db.getSchema() 
+            }
+            // if not exist return null;
+            return null;
+        },
+        setUser: function(data) {
+            db.create(data);
+        },
+        logout: function () {
+            db.delete(); // delete the whole schema
+        }
     }
 }]);

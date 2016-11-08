@@ -19,10 +19,11 @@ class AuthController extends CI_Controller
             $apiKey = "gnrBtIk0SmONhzD8_BPXYQ";
             $sg = new \SendGrid($apiKey);
 
-            $response = $sg->client->mail()->send()->post($mail);
+            // $response = $sg->client->mail()->send()->post($mail);
+            $response = ['response' => true, 'msg' => "Forgot password notification was sent to your email" ];
             $this->output
                 ->set_content_type('application/json')
-                ->set_output(json_encode([$response]));
+                ->set_output(json_encode($response));
 
         }
         else

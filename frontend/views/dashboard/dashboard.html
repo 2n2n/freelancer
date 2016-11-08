@@ -3,8 +3,8 @@
     <img src="http://photographyinspired.com/media/2014/08/Cool-Cat-Facebook-Profile-Timeline-Cover-Ultimate-Collection-Of-Top-50-Best-Cute-Facebook-Cover-For1.jpg" alt="profile">
     <div class="caption">
     <h2 class="lead" style="margin-bottom:5px;">Hi I'm </h2>
-    <h3 style="margin-top: 5px;">{{ $parent.user.last_name | uppercase}}, {{ $parent.user.first_name | uppercase}}</h3>
-    <p><i class="glyphicon glyphicon-envelope"></i> {{ $parent.user.email }}</p>
+    <h3 style="margin-top: 5px;">{{ user.last_name | uppercase}}, {{ user.first_name | uppercase}}</h3>
+    <p><i class="glyphicon glyphicon-envelope"></i> {{ user.email }}</p>
     <p>
         <a href="message/inbox" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-envelope"></i> Inbox</a>
         <a href="setting" class="btn btn-info" role="button"><i class="glyphicon glyphicon-user"></i>Edit My Account</a>
@@ -21,8 +21,16 @@
             </a>
         </div>
     </div>
-    <div class="row" ng-show="protfolios.length > 0">
-        <div class="col-sm-6 col-md-4" ng-repeat="portfolio in protfolios">
+    <div class="row" ng-show="portfolios.length > 0">
+        <div class="col-md-12">
+            <p class="text-right">
+               <a href="portfolio/add" class="btn btn-primary btn-sm" role="button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    Add project
+                </a> 
+            </p>
+        </div>
+        <div class="col-sm-6 col-md-4" style="height:350px;" ng-repeat="portfolio in portfolios">
             <div class="thumbnail">
                 <img src="{{ portfolio.images[0] }}" class="img-responsive">
                 <div class="caption">
@@ -34,18 +42,19 @@
                 </p>
                 <p>
                 <a href="portfolio/edit/{{portfolio.id}}" class="btn btn-primary" role="button">Edit</a>
-                <!-- <a href="#" class="btn btn-default" role="button">Button</a></p> -->
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" ng-show="protfolios.length == 0">
-        <div class="alert alert-warning" role="alert">
-            You <strong>don't have</strong> any projects yet!
-            <a href="portfolio/add" class="btn btn-primary btn-sm pull-right" role="button">
-                <i class="glyphicon glyphicon-plus"></i>
-                Add project
-            </a>
+    <div class="row" ng-show="portfolios.length == 0">
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+                You <strong>don't have</strong> any projects yet!
+                <a href="portfolio/add" class="btn btn-primary btn-sm pull-right" role="button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    Add project
+                </a>
+            </div>
         </div>
     </div>
 </div>
