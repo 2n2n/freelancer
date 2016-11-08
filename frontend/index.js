@@ -189,20 +189,21 @@ app.controller('DashboardController', ['$scope', '$http', '$routeParams', 'UserS
     scope.messages = [];
     scope.user = UserService.getUser();
 
-    // if( routeParams.hasOwnProperty('id') )
-    // {
-    //     http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
-    //     .then(function(r) {
-    //         scope.formdata = r.data;
-    //     })
-    // }
-    // else if(scope.user !== null)
-    //  {
-    //     http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
-    //     .then(function(r) {
-    //         scope.messages = r.data;
-    //     })
-    // }
+  /*  if( routeParams.hasOwnProperty('id') )
+    {
+        http.post('http://localhost/freelancer/api/portfolio/get', {id: routeParams.id })
+        .then(function(r) {
+            scope.formdata = r.data;
+        })
+    }
+    else */
+    if(scope.user !== null)
+     {
+        http.post('http://localhost/freelancer/api/message/inbox', {id: UserService.getUser('id')})
+        .then(function(r) {
+            scope.messages = r.data;
+        })
+    }
 
 
     http({
